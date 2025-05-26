@@ -36,4 +36,4 @@ print(confusion_matrix(y_test, y_pred))
 dump(model, "posture_model.joblib")
 dump(encoder, "label_encoder.joblib")
 
-print("✅ Model trained and saved as 'posture_model.joblib'")
+print("Model trained and saved as 'posture_model.joblib'")

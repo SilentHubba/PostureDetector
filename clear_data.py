@@ -1,3 +1,5 @@
+# Remove all but the first line of the csv file.
+# Do this to clear training data
 filename = "dataset.csv"
 
 with open(filename, 'r') as f:

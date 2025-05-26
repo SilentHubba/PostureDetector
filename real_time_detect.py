@@ -16,17 +16,23 @@ mp_drawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 print("Press 'q' to quit.")
 
+# Loop through while the webcam is on 
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         break
 
+    # Mirror the frame
     frame = cv2.flip(frame, 1)
+
+    # Use mediapipe to recognize where the person is
     image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     results = pose.process(image_rgb)
 
+    # Default label
     label_text = "No pose detected"
 
+    # If it detects a person
     if results.pose_landmarks:
         # Draw landmarks
         mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
@@ -39,19 +45,22 @@ while cap.isOpened():
         # Convert to numpy and reshape for prediction
         X = np.array(keypoints).reshape(1, -1)
 
-        # Predict
+        # Predict 
         prediction = model.predict(X)[0]
         label = encoder.inverse_transform([prediction])[0]
 
+        # Show the prediction in the window
         label_text = f"Posture: {label.upper()}"
         color = (0, 255, 0) if label == "good" else (0, 0, 255)
         cv2.putText(frame, label_text, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
 
+    # Show the image
     cv2.imshow("Posture Detection", frame)
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
+# Close webcam and window
 cap.release()
 cv2.destroyAllWindows()
 pose.close()
